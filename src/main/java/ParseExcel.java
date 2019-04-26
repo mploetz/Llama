@@ -1,13 +1,25 @@
+import com.google.gson.Gson;
 import com.sun.corba.se.spi.orbutil.threadpool.Work;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import sun.net.www.http.HttpClient;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+
 import java.util.*;
 
 public class ParseExcel {
@@ -132,10 +144,31 @@ public class ParseExcel {
         double classAverage = calcs.GetAverageOfStudentsTestScores();
 
         List<Integer> femaleCSStudents = calcs.GetAllFemaleCSStudents();
-
-//        for (int i = 0; i < femaleCSStudents.size(); i++) {
-//            System.out.println(femaleCSStudents.get(i));
-//        }
+        // Sort the student ids from smallest to largest
+        Collections.sort(femaleCSStudents);
+        ArrayList<String> femaleCSStudentsString = new ArrayList<String>();
+        for (Integer i : femaleCSStudents) {
+            femaleCSStudentsString.add(String.valueOf(i));
+        }
+        String jsonFemaleCSStudentsArray = new Gson().toJson(femaleCSStudentsString.toArray());
+        // Make request to send data
+        // Sending JSON data
+        /*
+            Key	Value
+            "id"	Your email address
+            "name"	Your name
+            "average"	The class average. Round to the nearest whole number. Make sure this is sent as an integer.
+            "studentIds"	The array of IDs (as strings) corresponding to female computer science majors, sorted from smallest to largest (e.g., an ID of "11000" should be before an ID of "12000")
+         */
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        HttpPost request = new HttpPost("http://3.86.140.38:5000/challenge");
+        Gson gson = new Gson();
+        GsonData data = new GsonData(classAverage, femaleCSStudentsString);
+        StringEntity postingString = new StringEntity(gson.toJson(data));
+        request.setEntity(postingString);
+        request.setHeader("Content-type", "application/json");
+        HttpResponse  response = httpClient.execute(request);
+        System.out.println(response.getStatusLine().getStatusCode());
 
     }
 }
