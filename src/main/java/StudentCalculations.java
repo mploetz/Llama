@@ -1,19 +1,33 @@
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class StudentCalculations {
 
-    private List<Student> students;
-    public StudentCalculations(List<Student> students) {
+    private Map<Integer, Student> students;
+    public StudentCalculations(Map<Integer, Student> students) {
         this.students = students;
     }
 
-    private double GetAverageOfStudentsTestScores() {
+    public double GetAverageOfStudentsTestScores() {
         int totalOfScores = 0;
         int totalStudents = this.students.size();
-        for (int i = 0; i < totalStudents; i++) {
-            totalOfScores += this.students.get(i).GetTestScore();
+        for (Map.Entry<Integer, Student> student : this.students.entrySet()) {
+            totalOfScores += student.getValue().GetTestScore();
         }
 
         return totalOfScores / totalStudents;
+    }
+
+    public List<Integer> GetAllFemaleCSStudents() {
+        List<Integer> femaleCSStudents = new ArrayList<Integer>();
+        for (Map.Entry<Integer, Student> student : this.students.entrySet()) {
+            Student currentStudent = student.getValue();
+            if (currentStudent.GetGender().equals("F") && currentStudent.GetMajor().equals("computer science")) {
+                femaleCSStudents.add(currentStudent.GetStudentId());
+            }
+        }
+
+        return femaleCSStudents;
     }
 }

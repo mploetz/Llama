@@ -5,7 +5,7 @@ public class Student {
     private int TestScore;
 
     public Student() {
-
+        this.TestScore = 0;
     }
 
     public Student(Integer studentId, String Major, String Gender, int testScores) {
@@ -40,8 +40,14 @@ public class Student {
     }
 
     public void SetScore(double score) {
-        if (this.TestScore < (int) score) {
-            this.TestScore = (int) score;
-        }
+        this.TestScore = (int) score;
+    }
+
+    public String GetMajor() {
+        return this.Major;
+    }
+
+    public String GetGender() {
+        return this.Gender;
     }
 }
