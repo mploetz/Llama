@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-
+// This class is used to format into JSON to POST to the server
 public class GsonData {
 
     public String getId() {

@@ -1,3 +1,4 @@
+// Representation of a Student
 public class Student {
     private int StudentId;
     private String Major;
@@ -15,6 +16,7 @@ public class Student {
         this.TestScore = testScores;
     }
 
+    // Format the output of a Student
     public String toString() {
         return String.format("%d - %s - %s - %d", StudentId, Major, Gender, TestScore);
     }
